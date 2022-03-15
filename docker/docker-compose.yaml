@@ -1,0 +1,55 @@
+version: '3'
+services:
+  nginx:
+   container_name: sd-nginx
+   image: nginx:1.13
+   restart: always
+   ports:
+   - 80:80
+   - 443:443
+   volumes:
+   - ./nginx/conf.d:/etc/nginx/conf.d
+   
+  redis:
+    container_name: sd-redis
+    image: redis:4.0.13 
+    restart: always
+    command: redis-server /usr/local/etc/redis/redis.conf
+    ports:
+      - 6379:6379
+    volumes:
+      - ./redis/data:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+      
+  mysql:
+   container_name: sd-mysql
+   image: mysql/mysql-server:5.7
+   environment:
+    MYSQL_DATABASE: test
+    MYSQL_ROOT_PASSWORD: hellokoding
+    MYSQL_ROOT_HOST: '%'
+   command:
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+      --explicit_defaults_for_timestamp=true
+      --lower_case_table_names=1
+      --max_allowed_packet=128M;
+   ports:
+   - "3306:3306"
+   restart: always
+   
+  app:
+    restart: always
+    build: ./app
+    working_dir: /app
+    volumes:
+      - ./app:/app
+      - ~/.m2:/root/.m2
+    expose:
+      - "8080"
+    depends_on:
+      - nginx
+      - mysql
+    command: mvn clean spring-boot:run -Dspring-boot.run.profiles=docker
+
