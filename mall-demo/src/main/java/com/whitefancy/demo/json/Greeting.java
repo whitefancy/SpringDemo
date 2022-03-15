@@ -1,4 +1,4 @@
-package com.whitefancy.demo;
+package com.whitefancy.demo.json;
 
 public class Greeting {
 

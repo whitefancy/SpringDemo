@@ -1,4 +1,4 @@
-package com.whitefancy.demo;
+package com.whitefancy.demo.json;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
